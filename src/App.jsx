@@ -1,33 +1,36 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useEffect, useState } from 'react'
 import './App.css'
 
+// Hacer una peticion a esta api https://fakestoreapi.com/users
+// Y extraer el Nombre, correo y telefono de cada usuario registrado.
+// Mostrar por pantalla estos datos.
+
 function App() {
-  const [count, setCount] = useState(0)
+  const [productos, setProductos] = useState([])
+
+  const obtenerDatos = async ()=>{
+    let response = await fetch('https://fakestoreapi.com/products')
+    let data = await response.json()
+    setProductos(data)
+  }
+
+  useEffect(()=>{
+    obtenerDatos()
+  },[])
+
+  if(productos.length == 0){
+    return <h1>Cargando...</h1>
+  }
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Peticiones</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <h1>Productos</h1>
+      {productos.map((element,index)=>{
+        return <div key={index}>
+            <h3>{element.title}</h3>
+            <img src={element.image} height={200} alt="" />
+        </div>
+      })}
     </>
   )
 }
